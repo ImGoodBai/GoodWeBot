@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat UI</title>
+    <link href="res/antd.css" rel="stylesheet">
+    <link rel="stylesheet" href="res/styles.css">
+    <script src="res/jquery-3.6.0.min.js"></script>
+    <script src="res/chat-auto2.js"></script>
+
+</head>
+<body>
+<!-- HTML: 增加蒙版 -->
+<div id="overlay" >
+    执行中，误操作！按空格键强制退出。
+</div>
+
+<div class="topmenu">
+    <div class="left-menu">
+        <span>GoodWeBot微信机器人</span>
+                <!--
+        <span id="chat-menu" class="menu-item">半自动聊天</span>
+                -->
+        <span id="control-menu" class="menu-item">AI聊天</span>
+        <span id="add-friend-menu" class="menu-item">批量添加</span>
+        <span id="accept-friend-menu" class="menu-item">自动接受</span>
+        <!--
+                <span id="comment-menu" class="menu-item">朋友圈评论</span>
+
+        -->
+        <span id="settings-menu" class="menu-item">设置</span>
+    </div>
+</div>
+
+
+<style>
+/* 工具栏样式 */
+.toolbar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toolbar select, .toolbar button {
+    padding: 5px;
+    font-size: 14px;
+}
+</style>
+
+
+<div class="container-out">
+    <div class="container" id="control-content" style="display: none;">
+                <!-- 工具栏部分 -->
+        <div class="toolbar">
+                        <!--
+
+            <label for="ai-mode">AI模式：</label>
+            <select id="ai-mode">
+                <option value="auto">全自动模式</option>
+                <option value="semi-auto">半自动模式</option>
+            </select>
+            -->
+
+            <label for="chat-scope">范围：</label>
+            <select id="chat-scope">
+                <option value="single">只处理单聊</option>
+                <option value="group">只处理群聊</option>
+                <option value="both">单聊和群聊都处理</option>
+            </select>
+
+            <button class="ant-btn ant-btn-primary"  id="autochat">AI批量回复未读消息</button>
+        </div>
+        <div class="main-content hastoolbar">
+            <div class="sidebar" id="sidebar-autochat">
+                <div class="account-bar">
+                    <img src="res/imgs/me.jpg" alt="Avatar">
+                    <span id="nickname">二白白</span>
+                </div>
+                <div id="friend-list-autochat">
+                    <!-- 好友列表将动态加载到这里 -->
+                </div>
+            </div>
+            <div class="content" >
+                <div class="chat-header" id="chat-header-autochat" style="margin-bottom: 20px; text-align: center;">
+                    <!-- 聊天对象名称 -->
+                </div>
+                <div class="message-area" id="message-area-autochat">
+                    <!-- 聊天记录将加载到这里 -->
+                </div>
+                <div class="input-area">
+                    <textarea class="message-input" id="message-input-autochat" placeholder="输入消息" rows="4" style="resize: none;"></textarea>
+                    <button class="send-button" id="send-button-autochat">发送</button>
+                    <button class="gen-button" id="gen-button-autochat">生成回答</button>
+                </div>
+            </div>
+            <div class="logbar" id="logbar-autochat">
+                <div class="account-bar">
+                    <span>运行日志</span>
+                </div>
+                <div id="logbar-list-autochat">
+                    <!-- 运行动态加载到这里 -->
+                </div>
+            </div>
+        </div>  
+    </div>
+    <div class="container" id="add-friend-content" style="display: none;">
+        <div class="main-content">
+            <div class="sidebar" id="sidebar-autochat">
+                <div id="friend-list-autochat">
+                    <div class="sideitem" data-name="Alice">
+                        <span>添加任务001</span>
+                        <span class="-dot"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="content" style="padding: 20px;">
+                <div class="chat-header"  style="margin-bottom: 20px; text-align: center;">
+                    <h3>新建批量添加新好友</h3> <!-- 可根据需要填写聊天对象名称 -->
+                </div>
+                
+                <div class="input-area">
+                    <div id="accept-form" style="max-width: 600px; margin: 0 auto;">
+
+                        <!-- 好友分组标签 -->
+                        <section style="margin-bottom: 30px;">
+                            <div class="form-item" style="margin-bottom: 15px;">
+                                <label for="label" style="font-size: 16px; font-weight: 500;">指定申请理由：</label>
+                                <input type="text" id="add-subject" name="label" class="ant-input" value="我是古德白，AI布道师，请请教自媒体运营，通过一下"  placeholder="请输入分组标签" style="width: 100%; padding: 8px; font-size: 14px;" required/>
+                            </div>
+                        </section>
+                        <section style="margin-bottom: 30px;">
+                            <div class="form-item" style="margin-bottom: 15px;">
+                                <label for="label" style="font-size: 16px; font-weight: 500;">指定分组标签：</label>
+                                <input type="text" id="add-addtag" name="label" class="ant-input" value="newtag"  placeholder="请输入分组标签" style="width: 100%; padding: 8px; font-size: 14px;" />
+                            </div>
+                        </section>
+                        
+                        <!-- 好友备注后缀 -->
+                        <section style="margin-bottom: 30px;">
+                            <div class="form-item" style="margin-bottom: 15px;">
+                                <label for="content" style="font-size: 16px; font-weight: 500;">指定备注后缀：</label>
+                                <input type="text" id="add-addremark" name="content" class="ant-input" value="remark" placeholder="请输入备注后缀" style="width: 100%; padding: 8px; font-size: 14px;" />
+                            </div>
+                        </section>
+                        <!-- 手机号/微信号输入框 -->
+                        <section style="margin-bottom: 30px;">
+                            <div class="form-item" style="margin-bottom: 15px;">
+                                <label for="message-input-autochat" style="font-size: 16px; font-weight: 500;">指定要添加的手机号/微信号（每行一条）：</label>
+                                <textarea class="message-input ant-input" id="message-input-add" maxlength="50" placeholder="18678789898" rows="10" style="width: 100%; padding: 8px; font-size: 14px; resize: none;">13641166495</textarea>
+                            </div>
+                        </section>
+                    
+                        <!-- 提交按钮 -->
+                        <div class="form-item" style="text-align: center; margin-bottom: 30px;">
+                            <button type="submit" id="add-newf" class="ant-btn ant-btn-primary" style="width: 100%;  font-size: 16px;">执行</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="logbar" id="logbar-add">
+                <div class="account-bar">
+                    <span>运行日志</span>
+                </div>
+                <div id="logbar-list-add">
+                    <!-- 运行动态加载到这里 -->
+                </div>
+            </div>
+        </div>  
+    </div> 
+    <div class="container" id="accept-friend-content" style="display: none;">
+        <div class="main-content">
+            <div class="sidebar" id="sidebar-autochat">
+                <div id="friend-list-autochat">
+                    <div class="sideitem" data-name="Alice">
+                        <span>处理记录001</span>
+                        <span class="-dot"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="content" style="padding: 20px;">
+                <div class="chat-header" style="margin-bottom: 20px;">
+                    <h3>自动接受好友请求</h3>
+                </div>
+                <div class="input-area">
+                    <div id="accept-form" style="max-width: 600px; margin: 0 auto;">
+                        
+                        <!-- 好友分组标签 -->
+                        <section style="margin-bottom: 30px;">
+                            <div class="form-item" style="margin-bottom: 15px;">
+                                <label for="label" style="font-size: 16px; font-weight: 500;">好友分组标签：</label>
+                                <input type="text" id="accept-addtag" name="label" class="ant-input" value="newtag"  placeholder="请输入分组标签" style="width: 100%; padding: 8px; font-size: 14px;" />
+                            </div>
+                        </section>
+                        
+                        <!-- 好友备注后缀 -->
+                        <section style="margin-bottom: 30px;">
+                            <div class="form-item" style="margin-bottom: 15px;">
+                                <label for="content" style="font-size: 16px; font-weight: 500;">好友备注后缀：</label>
+                                <input type="text" id="accept-addremark" name="content" class="ant-input" value="remark" placeholder="请输入备注后缀" style="width: 100%; padding: 8px; font-size: 14px;" />
+                            </div>
+                        </section>
+                        <!-- 输入框 -->
+                        <section style="margin-bottom: 30px;">
+                            <div class="form-item" style="margin-bottom: 15px;">
+                                <label for="message-input-autochat" style="font-size: 16px; font-weight: 500;">指定添加后的回复消息的内容。</label>
+                                <textarea class="message-input ant-input" id="message-input-accept" maxlength="800" placeholder="你好，请问你是需要购买产品还是要售后服务呢？" rows="6" style="width: 100%; padding: 8px; font-size: 14px; resize: none;">你好，请问你是需要购买产品还是要售后服务呢？</textarea>
+                            </div>
+                        </section>                        
+                        <!-- 提交按钮 -->
+                        <div class="form-item" style="text-align: center; margin-bottom: 30px;">
+                            <button type="submit" id="accept-newf" class="ant-btn ant-btn-primary" style="width: 100%;  font-size: 16px;">执行</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="logbar" id="logbar-accept_newf">
+                <div class="account-bar">
+                    <span>运行日志</span>
+                </div>
+                <div id="logbar-list-accept_newf">
+                    <!-- 运行动态加载到这里 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="comment-content" style="display: none;">
+        <p>这是朋友圈评论页面。</p>
+    </div>
+    <div class="container" id="settings-content" style="display: none;">
+        <div class="main-content">
+            <div class="sidebar" id="sidebar-setup">
+                <div id="friend-list-setup">
+                    <div class="sideitem" data-name="Alice">
+                        <span>基础配置</span>
+                        <span class="-dot"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="content" style="max-width: 600px; margin: 0 auto;">
+                <div class="chat-header" style="margin-bottom: 20px; text-align: center;">
+                    <h3>基础设置</h3>
+                </div>
+
+                <!-- Section 3: API 选择 -->
+                <section style="margin-bottom: 30px;">
+                    <h4 style="font-size: 18px; font-weight: 500; margin-bottom: 10px;">请选择API配置</h4>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <div style="margin-top: 10px;">
+                            <input type="radio" id="aiwis_api" name="api_choice" value="aiwis" style="margin-right: 10px;" checked>
+                            <label for="aiwis_api">内置API (仅供内测用户免费使用）</label>
+                            <!-- 
+                            <input type="radio" id="coze_api" name="api_choice" value="coze" style="margin-right: 10px;">
+                            <label for="coze_api" style="margin-right: 20px;">Coze API</label>
+                             -->
+                        </div>
+                    </div>
+                </section>
+                <!-- Section 1: Coze API 配置区 -->
+                  <!-- 
+                <section style="margin-bottom: 30px;">
+                    <h4 style="font-size: 18px; font-weight: 500; margin-bottom: 10px;">Coze API 配置区</h4>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="coze_bot_id" style="font-size: 16px; font-weight: 500;">Bot ID：</label>                        
+                        <input type="text" id="coze_bot_id" name="bot_id" class="ant-input" placeholder="请输入 Bot ID" value="73906623037********" style="width: 100%; padding: 8px; font-size: 14px;" />
+                    </div>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="token" style="font-size: 16px; font-weight: 500;">Token：</label>
+                        <input type="text" id="coze_token" name="token" class="ant-input" placeholder="请输入 Token"  value="pat_3NqX8PrguOPxlz2zF8aR3hlsOJkqjdLzcdIj********" style="width: 100%; padding: 8px; font-size: 14px;" />
+                    </div>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="coze_api_base" style="font-size: 16px; font-weight: 500;">coze api地址（如果不懂就不要修改）：</label>                        
+                        <input type="text" id="coze_api_base" name="coze_api_base" class="ant-input" placeholder="请输入 API Base" value="coze.cn" style="width: 100%; padding: 8px; font-size: 14px;" />
+                </section>
+            -->
+                <!-- Section 2: AIWis API 配置区 -->                                 <!-- 
+
+                <section style="margin-bottom: 30px;">
+                    <h4 style="font-size: 18px; font-weight: 500; margin-bottom: 10px;">AIWis API 配置区</h4>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="aiwis_api_base" style="font-size: 16px; font-weight: 500;">API Base URL：</label>
+                        <input type="text" id="aiwis_api_base" name="aiwis_api_base" class="ant-input" placeholder="请输入 API Base URL" style="width: 100%; padding: 8px; font-size: 14px;" />
+                    </div>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="aiwis_api_key" style="font-size: 16px; font-weight: 500;">API Key：</label>
+                        <input type="text" id="aiwis_api_key" name="aiwis_api_key" class="ant-input" placeholder="请输入 API Key" style="width: 100%; padding: 8px; font-size: 14px;" />
+                    </div>
+                </section>
+            -->
+
+                <!-- Section 3: OpenAI API 配置区 -->
+                 <!-- 
+                <section style="margin-bottom: 30px;">
+                    <h4 style="font-size: 18px; font-weight: 500; margin-bottom: 10px;">OpenAI API 配置区</h4>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="api_base_url" style="font-size: 16px; font-weight: 500;">API Base URL：</label>
+                        <input type="text" id="openai_api_base" name="openai_api_base" class="ant-input" placeholder="请输入 API Base URL" style="width: 100%; padding: 8px; font-size: 14px;" />
+                    </div>
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="openai_api_key" style="font-size: 16px; font-weight: 500;">API Key：</label>
+                        <input type="text" id="openai_api_key" name="openai_api_key" class="ant-input" placeholder="请输入 API Key" style="width: 100%; padding: 8px; font-size: 14px;" />
+                    </div>
+                </section>
+                 -->
+                 <section style="margin-bottom: 30px;">
+                    <div class="form-item" style="margin-bottom: 15px;">
+                        <label for="message-input-autochat" style="font-size: 16px; font-weight: 500;">AI知识（使用你的资料替换下面内容，目前限制800字内）：</label>
+                        <textarea class="message-input ant-input" id="message-input-userprompt" maxlength="800" placeholder="一般这里写角色描述、任务和其他回答问题的要求。" rows="40" style="width: 100%; padding: 8px; font-size: 14px; resize: none;">
+
+                        </textarea>
+                    </div>
+                </section>
+                <!-- 提交按钮 -->
+                <div class="form-item" style="text-align: center; margin-bottom: 30px;">
+                    <button type="submit" id="setup_save2" class="ant-btn ant-btn-primary" style="width: 100%;font-size: 16px;">保存配置</button>
+                </div>
+                
+                <!-- 底部信息 -->
+                <div style="text-align: center; font-size: 14px; color: #555;">
+                    <p>版本号：GoodWeBot v0.2 （20240909）</p>
+                    <p>
+                        GitHub：<a href="https://github.com/ImGoodBai/GoodWeBot" target="_blank">https://github.com/ImGoodBai/GoodWeBot</a>
+                    </p>
+                    <p>
+                        主页：<a href="http://100agent.cn" target="_blank">http://100agent.cn</a>
+                    </p>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+</body>
+</html>

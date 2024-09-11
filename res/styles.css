@@ -1,0 +1,183 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    max-width: 1000px;
+    min-width: 700px;
+}
+
+.topmenu {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 10px 20px;
+}
+
+.topmenu .left-menu {
+    display: flex;
+    align-items: center;
+}
+
+.topmenu .left-menu span {
+    margin-right: 20px;
+}
+
+.topmenu .toggle-switch {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.topmenu .toggle-switch input {
+    margin-left: 10px;
+}
+
+.container .main-content{
+    display: flex;
+    height: calc(100vh - 50px); /* 减去topmenu的高度 */
+}
+.container .hastoolbar{
+    height: calc(100vh - 120px)!important; /* 减去topmenu的高度 */
+}
+
+.sidebar {
+    width: 200px;
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background: #eaeaea;
+}
+.logbar {
+    width: 300px;
+    border-left: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    background: #eaeaea;
+}
+
+.account-bar {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.account-bar img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.friend {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.friend img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.friend:hover {
+    background-color: #f0f0f0;
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    font-weight: bold;
+}
+
+.message-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.input-area {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #ddd;
+}
+
+#control-content .input-area input {
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    height: 80px;
+}
+
+.input-area .send-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #e9e9e9;
+    color: #07c160;
+    cursor: pointer;
+    height: 80px;
+    margin-right: 5px;
+}
+.input-area .gen-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #e9e9e9;
+    color: #07c160;
+    cursor: pointer;
+    height: 80px;
+}
+.active {
+    background-color: #c8c7c5; /* 背景变深 */
+}
+.message-input {
+    flex: 1;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 0px;
+    height: 100px; /* 4倍行高 */
+    resize: none; /* 禁用拖动调整大小 */
+}
+#logbar-list-autochat {
+    overflow-y: auto; /* 当内容超出时显示垂直滚动条 */
+}
+div#overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.85);
+    padding-top: 20%;
+    font-size: xxx-large;
+    display: none;
+}
