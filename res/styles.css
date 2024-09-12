@@ -45,7 +45,6 @@ body {
 .sidebar {
     width: 200px;
     border-right: 1px solid #ddd;
-    padding: 10px;
     display: flex;
     flex-direction: column;
     background: #eaeaea;
@@ -180,4 +179,20 @@ div#overlay {
     padding-top: 20%;
     font-size: xxx-large;
     display: none;
+}
+div#friend-list-autochat {
+    overflow-y: auto;
+}
+.toolbar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toolbar select, .toolbar button {
+    padding: 5px;
+    font-size: 14px;
 }
