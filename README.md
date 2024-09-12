@@ -35,7 +35,7 @@ GoodWeBot 是一款基于RPA技术实现的AI微信机器人，支持AI自动回
 
 <img src="imgs/24.png" width="500"> 
 
-## 更新记录 
+## 更新记录  
 ### v0.3 20240912 
 1. 升级RPA执行库
 2. 开放coze api接入
