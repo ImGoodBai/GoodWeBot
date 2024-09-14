@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    const firstMenu = $('#first-menu');
+    const chatMenu = $('#control-menu');
     const friendList = $('#friend-list-autochat');
     const chatHeader = $('#chat-header-autochat');
-    const messageArea_auto = $('#message-area-autochat');
+    const messageArea = $('.message-area');
     const messageInput = $('#message-input-autochat');  // 修正选择器错误
     const sendButton = $('#send-button-autochat');
     const genButton = $('#gen-button-autochat');
@@ -12,28 +12,16 @@ $(document).ready(function() {
     running = false
     let currentFriend = null;
     interval = null;
-    let frienditemclickbind = 0;
-
 
     function loadChatList_auto() {
         $.get('http://127.0.0.1:5001/get_chat_list', function(data) {
-            const firstFriend = data[0];
-            if (firstFriend) {
-                // 将第一个项目的名字赋值给指定的 <span id="nickname">
-                $('#nickname').text(firstFriend.name);
-            }
             friendList.empty();
-            data.forEach((friend, index) => {
-                if (friend.name.length > 15) {
-                    newname = friend.name.substring(0, 15) + '...';
-                }else {
-                    newname = friend.name;                  
-                }
-                if (index >= 1) {
+            data.forEach(friend => {
+                if (friend.unread > 0) { // 只有未读消息数大于0时才处理
                     const friendItem = $(`
                         <div class="friend" data-name="${friend.name}">
                             <img src="${friend.avatar}" alt="${friend.name}">
-                            <span>${newname}</span>
+                            <span>${friend.name}</span>
                             ${friend.unread > 0 ? '<span class="unread-dot"></span>' : ''}
                         </div>
                     `);
@@ -42,48 +30,38 @@ $(document).ready(function() {
             });
         });
     }
+    
+    function loadChatList() {
+        $.get('http://127.0.0.1:5001/get_chat_list', function(data) {
+            friendList.empty();
+            data.forEach(friend => {
+                const friendItem = $(`
+                    <div class="friend" data-name="${friend.name}">
+                        <img src="${friend.avatar}" alt="${friend.name}">
+                        <span>${friend.name}</span>
+                        ${friend.unread > 0 ? '<span class="unread-dot"></span>' : ''}
+                    </div>
+                `);
+                friendList.append(friendItem);
+            });
+        });
+    }
 
     function loadCurrentChat(name) {
         running = true
         console.log('running value1 '+running);
-        messageArea_auto.empty();
+        messageArea.empty();
         $.get('http://127.0.0.1:5001/get_curr_chat', { name: name }, function(data) {
             data.forEach(message => {
                 const alignment = message.sender === 'self' ? 'right;margin-left: 20%;background: #95ec69; padding: 8px; border-radius: 5px;' : 'left;width: 80%';
                 const messageItem = $(`<p style="text-align: ${alignment};"> ${message.content}</p>`);
-                messageArea_auto.append(messageItem);
+                messageArea.append(messageItem);
             });
             running = false
             console.log('running value2 '+running);
         });
     }
-    
     function registerFriendClickHandler_auto() {
-        // 使用事件委托，将 click 事件绑定到父容器上
-        if (frienditemclickbind == 1) {
-            return;
-        }
-        frienditemclickbind = 1;
-        $('#friend-list-autochat').on('click', '.friend', function() {
-            // 移除其他元素的 active 状态
-            $('.friend').removeClass('active');
-            // 给当前点击的元素添加 active 状态
-            $(this).addClass('active');
-            
-            // 获取当前好友的名字
-            currentFriend = $(this).data('name');
-            
-            // 更新日志和聊天头部信息
-            appendLogWithDate("好友：" + currentFriend, '#logbar-list-autochat');
-            chatHeader.text(currentFriend);
-            
-            // 加载当前聊天内容
-            loadCurrentChat(currentFriend);
-        });
-    }
-    
-
-    function registerFriendClickHandler_auto1() {
         friendList.find('.friend').each(function() {
             // 判断是否已经绑定过 click 事件
             if (!$(this).data('click-bound')) {
@@ -102,8 +80,8 @@ $(document).ready(function() {
             }
         });
     }
-
-    function registerFriendClickHandler_auto2() {
+    
+    function registerFriendClickHandler_auto() {
         friendList.on('click', '.friend', function() {
             if (!$(this).data('click-bound')) {
                 $('.friend').removeClass('active');
@@ -112,14 +90,15 @@ $(document).ready(function() {
                 appendLogWithDate("好友："+currentFriend,'#logbar-list-autochat');
                 chatHeader.text(currentFriend);
                 loadCurrentChat(currentFriend);
+                $(this).data('click-bound', true);
                 //setInterval(() => loadCurrentChat(currentFriend), 3000);
             }
         });
     }
 
     sendButton.click(function() {
-        console.log('running value5 '+running);
         running = true
+        console.log('running value5 '+running);
         const message = messageInput.val();
         appendLogWithDate("开始发送消息；",'#logbar-list-autochat');
         appendLogWithDate(">>>"+message,'#logbar-list-autochat');
@@ -147,11 +126,6 @@ $(document).ready(function() {
     });
 
     genButton.click(function() {
-        if (!currentFriend) {
-            alert('请先选择一个好友再开始发送消息');
-            return;
-        }        
-        console.log('running value5 '+running);
         running = true
         console.log('running value3 '+running);
         const content = $('#message-area-autochat p:last').text();
@@ -277,10 +251,6 @@ $(document).ready(function() {
         $('.container').hide();
 
         switch ($(this).attr('id')) {
-            case 'first-menu':
-                $('#first-content').show();
-                $('#sidebar').hide();
-                break;
             case 'control-menu':
                 $('#control-content').show();
                 $('#sidebar').hide();             
@@ -306,7 +276,7 @@ $(document).ready(function() {
                 break;
         }
     });
-    firstMenu.click();
+    chatMenu.click();
 });
 $(document).ready(function() {
     let isControlActive = false;
@@ -338,8 +308,6 @@ $(document).on('keydown', function(e) {
 });
 
 $('#autochat').click(function() {
-    alert('批量回复功能暂停，先点击“生成回答”手动使用');
-    return;
     if (!isControlActive) {
         // 启动操作
         isControlActive = true;

@@ -19,7 +19,9 @@
 <div class="topmenu">
     <div class="left-menu">
         <span>GoodWeBot微信机器人</span>
-        <span id="first-menu" class="menu-item">首页</span>
+                <!--
+        <span id="chat-menu" class="menu-item">半自动聊天</span>
+                -->
         <span id="control-menu" class="menu-item">AI聊天</span>
         <span id="add-friend-menu" class="menu-item">批量添加</span>
         <span id="accept-friend-menu" class="menu-item">自动接受</span>
@@ -32,65 +34,49 @@
 </div>
 
 
+<style>
+/* 工具栏样式 */
+.toolbar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toolbar select, .toolbar button {
+    padding: 5px;
+    font-size: 14px;
+}
+</style>
+
+
 <div class="container-out">
-
-    <div class="container" id="first-content" style="display: none;">
-        <div class="main-content">
-            <div class="sidebar" id="sidebar-first">
-                <div class="account-bar">
-                </div>
-                <div id="friend-list-first">
-                    <!-- 好友列表将动态加载到这里 -->
-                </div>
+    <div class="container" id="chat-content">
+        <!----
+        <div class="sidebar" id="sidebar">
+            <div class="account-bar">
+                <img src="https://via.placeholder.com/40" alt="Avatar">
+                <span>二白白</span>
             </div>
-            <div class="content" >
-                <div class="chat-header"  style="margin-bottom: 20px; text-align: center;">
-                    <h3>欢迎使用 GoodWeBot AI聊天机器人</h3>
-                    </h3> <!-- 可根据需要填写聊天对象名称 -->
-                </div>
-                <div class="message-area" id="message-area-first2">
-                    <h3>使用说明</h3> 
-                    <p>1. 先登录微信，建议用小号，但绝对不要用新号。</p>
-                    <p>2. 操作时把网页窗口缩小，和微信窗口并排放置。</p>
-                   </p>
-                    <h3>功能介绍</h3>
-                    <p>GoodWeBot 是一款基于RPA技术实现的AI微信机器人，支持AI自动回复、自动加好友、自动接受好友申请、自动给好友打标签等功能。 </p>
-
-                    <h3>技术特点</h3>
-                    <p>1. 全RPA技术实现完全合规。</p>
-                    <p>2. 下载一键免安装运行,使用超级简便的AI微信机器人。</p>
-                    <p>3. 已接入coze等主流AI。</p>
-                    <p>4. 免费使用。</p>
-                    
-                </div>
-                <div class="message-area" id="message-area-first">
-                    <!-- 底部信息 -->
-                    <p>版本号：GoodWeBot v0.3 （20240912）</p>
-                    <p>
-                        GitHub：<a href="https://github.com/ImGoodBai/GoodWeBot" target="_blank">https://github.com/ImGoodBai/GoodWeBot</a>
-                    </p>
-                    <p>
-                        主页：<a href="http://100agent.cn" target="_blank">http://100agent.cn</a>
-                    </p>                </div>
-            </div>
-            <div class="logbar" id="logbar-first">
-                <div class="account-bar">
-                    <span>发版日志</span>
-                </div>
-                <div id="logbar-list-first">
-                    <p><b>v0.3 20240912</b></p>
-                    <p>1 升级RPA执行库</p>
-                    <p>2 开放coze api接入</p>
-                    <p>3 控制端应用端合为一个窗口</p>
-                    <p>4 修复备注时加好友bug</p>
-                    <p><b>v0.2 2024099</b></p>   
-                    <p>第一个版本</p>
-             
-                </div>
+            <div id="friend-list">
             </div>
         </div>
+        <div class="content" >
+            <div class="chat-header">
+            </div>
+            <div class="message-area">
+            </div>
+            <div class="input-area">
+                <textarea class="message-input" id="message-input" placeholder="输入消息" rows="4" style="resize: none;"></textarea>
+                <button class="send-button" id="send-button">发送</button>
+                <button class="gen-button" id="gen-button">生成回答</button>
+            </div>
+            </div>
+        </div>
+    -->
     </div>
-
     <div class="container" id="control-content" style="display: none;">
                 <!-- 工具栏部分 -->
         <div class="toolbar">
@@ -116,7 +102,7 @@
             <div class="sidebar" id="sidebar-autochat">
                 <div class="account-bar">
                     <img src="res/imgs/me.jpg" alt="Avatar">
-                    <span id="nickname">二白白</span>
+                    <span>二白白</span>
                 </div>
                 <div id="friend-list-autochat">
                     <!-- 好友列表将动态加载到这里 -->
@@ -147,8 +133,8 @@
     </div>
     <div class="container" id="add-friend-content" style="display: none;">
         <div class="main-content">
-            <div class="sidebar" id="sidebar-add">
-                <div id="friend-list-add">
+            <div class="sidebar" id="sidebar-autochat">
+                <div id="friend-list-autochat">
                     <div class="sideitem" data-name="Alice">
                         <span>添加任务001</span>
                         <span class="-dot"></span>
@@ -212,8 +198,8 @@
     </div> 
     <div class="container" id="accept-friend-content" style="display: none;">
         <div class="main-content">
-            <div class="sidebar" id="sidebar-accept">
-                <div id="friend-list-accept">
+            <div class="sidebar" id="sidebar-autochat">
+                <div id="friend-list-autochat">
                     <div class="sideitem" data-name="Alice">
                         <span>处理记录001</span>
                         <span class="-dot"></span>
@@ -291,15 +277,15 @@
                         <div style="margin-top: 10px;">
                             <input type="radio" id="aiwis_api" name="api_choice" value="aiwis" style="margin-right: 10px;" checked>
                             <label for="aiwis_api">内置API (仅供内测用户免费使用）</label>
-                            
+                            <!-- 
                             <input type="radio" id="coze_api" name="api_choice" value="coze" style="margin-right: 10px;">
                             <label for="coze_api" style="margin-right: 20px;">Coze API</label>
-                            
+                             -->
                         </div>
                     </div>
                 </section>
                 <!-- Section 1: Coze API 配置区 -->
-                
+                  <!-- 
                 <section style="margin-bottom: 30px;">
                     <h4 style="font-size: 18px; font-weight: 500; margin-bottom: 10px;">Coze API 配置区</h4>
                     <div class="form-item" style="margin-bottom: 15px;">
@@ -314,7 +300,7 @@
                         <label for="coze_api_base" style="font-size: 16px; font-weight: 500;">coze api地址（如果不懂就不要修改）：</label>                        
                         <input type="text" id="coze_api_base" name="coze_api_base" class="ant-input" placeholder="请输入 API Base" value="coze.cn" style="width: 100%; padding: 8px; font-size: 14px;" />
                 </section>
-            
+            -->
                 <!-- Section 2: AIWis API 配置区 -->                                 <!-- 
 
                 <section style="margin-bottom: 30px;">
@@ -328,7 +314,7 @@
                         <input type="text" id="aiwis_api_key" name="aiwis_api_key" class="ant-input" placeholder="请输入 API Key" style="width: 100%; padding: 8px; font-size: 14px;" />
                     </div>
                 </section>
-                  -->
+            -->
 
                 <!-- Section 3: OpenAI API 配置区 -->
                  <!-- 
@@ -347,7 +333,7 @@
                  <section style="margin-bottom: 30px;">
                     <div class="form-item" style="margin-bottom: 15px;">
                         <label for="message-input-autochat" style="font-size: 16px; font-weight: 500;">AI知识（使用你的资料替换下面内容，目前限制800字内）：</label>
-                        <textarea class="message-input ant-input" id="message-input-userprompt" maxlength="800" placeholder="一般这里写角色描述、任务和其他回答问题的要求。" rows="20" style="width: 100%; padding: 8px; font-size: 14px; resize: none;">
+                        <textarea class="message-input ant-input" id="message-input-userprompt" maxlength="800" placeholder="一般这里写角色描述、任务和其他回答问题的要求。" rows="40" style="width: 100%; padding: 8px; font-size: 14px; resize: none;">
 
                         </textarea>
                     </div>
@@ -357,6 +343,16 @@
                     <button type="submit" id="setup_save2" class="ant-btn ant-btn-primary" style="width: 100%;font-size: 16px;">保存配置</button>
                 </div>
                 
+                <!-- 底部信息 -->
+                <div style="text-align: center; font-size: 14px; color: #555;">
+                    <p>版本号：GoodWeBot v0.2 （20240909）</p>
+                    <p>
+                        GitHub：<a href="https://github.com/ImGoodBai/GoodWeBot" target="_blank">https://github.com/ImGoodBai/GoodWeBot</a>
+                    </p>
+                    <p>
+                        主页：<a href="http://100agent.cn" target="_blank">http://100agent.cn</a>
+                    </p>
+                </div>
             </div>
         </div>  
     </div>
