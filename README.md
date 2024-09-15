@@ -1,7 +1,7 @@
 # 功能介绍
 GoodWeBot 是一款基于RPA技术实现的AI微信机器人，支持AI自动回复、自动加好友、自动接受好友申请、自动给好友打标签等功能。
 
-<img src="v02.gif" width="500">
+<img src="v02.gif" width="600">
 
 ## 特点
 
