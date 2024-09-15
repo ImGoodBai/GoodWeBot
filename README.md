@@ -55,6 +55,6 @@ GoodWeBot 是一款基于RPA技术实现的AI微信机器人，支持AI自动回
 
 
 ## 联系我
-我的微信
+我的微信（备注：机器人）
 <img src="imgs/qr-白古德.jpg" width="200"> 
 
