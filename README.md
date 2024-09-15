@@ -56,3 +56,5 @@ GoodWeBot 是一款基于RPA技术实现的AI微信机器人，支持AI自动回
 
 ## 关注我了解更多搞钱项目
 
+<img src="qr-白古德.jpg" width="200"> 
+
