@@ -15,7 +15,7 @@ GoodWeBot 是一款基于RPA技术实现的AI微信机器人，支持AI自动回
 
 ## 下载使用
 
-1. 下载程序包，目前只支持win10、win11：https://github.com/ImGoodBai/GoodWeBot/archive/refs/heads/main.zip
+1. 下载程序包，目前只支持win10、win11： https://github.com/ImGoodBai/GoodWeBot/releases/download/0.8.2/GoodWeBot-0.8.2.exe
 2. 解压程序包后，进入目录双击运行 *GoodWeBot-xxx.exe*(运行前先登录微信)
 3. 如果看到下面的界面，说明关联微信客户端运行成功。
 
